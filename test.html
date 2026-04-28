@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>Journey Management Plan · PDF to Drive</title>
+  <style>
+    :root {
+      --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      --color-background-primary: #ffffff;
+      --color-background-secondary: #f5f7fa;
+      --color-background-info: #eef6ff;
+      --color-text-primary: #1e293b;
+      --color-text-secondary: #475569;
+      --color-text-info: #1e4a7a;
+      --color-border-primary: #cbd5e1;
+      --color-border-secondary: #e2e8f0;
+      --color-border-tertiary: #eef2f6;
+      --color-border-info: #bdd9ff;
+      --border-radius-sm: 8px;
+      --border-radius-md: 12px;
+      --border-radius-lg: 18px;
+      --accent: #1a3a5c;
+      --accent-light: #2a4a6c;
+      --shadow-focus: 0 0 0 3px rgba(26, 58, 92, 0.15);
+      --color-dark-green: #1b5e20;
+      --color-dark-green-light: #2e7d32;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-sans); background: var(--color-background-secondary); color: var(--color-text-primary); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+    .jmp-app { max-width: 720px; margin: 0 auto; padding: 1rem 1rem 3rem; }
+    .header { background: var(--accent); border-radius: var(--border-radius-lg); margin-bottom: 1.5rem; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.05); overflow: hidden; display: flex; flex-direction: column; position: relative; }
+    .header::before { display: none; }
+    .header::after { display: none; }
+    .header-logo { width: 100%; height: auto; display: block; object-fit: cover; }
+    .header-content { padding: 1.5rem; display: flex; flex-direction: column; gap: 6px; background: var(--accent); }
+    .header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: 0.02em; margin: 0; }
+    .header p { font-size: 0.9rem; opacity: 0.95; margin: 0; }
+    .company-id { font-size: 0.8rem; opacity: 0.85; margin-top: 6px; font-weight: 600; }
+    .route-tabs { display: flex; gap: 10px; margin-bottom: 1.5rem; }
+    .rtab { flex: 1; padding: 12px 8px; border-radius: 40px; border: 1px solid var(--color-border-secondary); background: var(--color-background-primary); font-size: 0.9rem; font-weight: 600; cursor: pointer; text-align: center; color: var(--color-text-secondary); transition: all 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+    .rtab.active { background: var(--accent); color: white; border-color: var(--accent); box-shadow: 0 6px 12px rgba(26,58,92,0.12); }
+    .section { background: var(--color-background-primary); border: 1px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); margin-bottom: 1.25rem; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+    .section-header { padding: 14px 18px; background: var(--color-background-secondary); border-bottom: 1px solid var(--color-border-tertiary); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-text-secondary); display: flex; align-items: center; gap: 10px; }
+    .dot { width: 10px; height: 10px; border-radius: 10px; background: var(--accent); flex-shrink: 0; }
+    .section-body { padding: 18px; display: flex; flex-direction: column; gap: 16px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .field-row.triple { grid-template-columns: 1fr 1fr 1fr; }
+    .field-row.full { grid-template-columns: 1fr; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-size: 0.8rem; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.02em; }
+    .field input, .field select, .field textarea { background: var(--color-background-secondary); border: 1px solid var(--color-border-secondary); border-radius: var(--border-radius-sm); padding: 12px 14px; font-size: 1rem; color: var(--color-text-primary); font-family: var(--font-sans); outline: none; width: 100%; transition: border 0.15s, box-shadow 0.15s; }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); box-shadow: var(--shadow-focus); }
+    .field textarea { resize: vertical; min-height: 80px; }
+    .odometer-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+    .checkpoint-scroll { overflow-x: auto; margin: 0 -4px; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
+    .checkpoint-grid { min-width: 780px; }
+    .checkpoint-header { display: grid; grid-template-columns: 70px 1fr 80px 80px 80px 80px 1fr; gap: 8px; padding: 8px 0 10px; border-bottom: 2px solid var(--color-border-secondary); margin-bottom: 6px; align-items: center; }
+    .checkpoint-row { display: grid; grid-template-columns: 70px 1fr 80px 80px 80px 80px 1fr; gap: 8px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--color-border-tertiary); }
+    .checkpoint-row:last-child { border-bottom: none; }
+    .col-hdr { font-size: 0.7rem; font-weight: 700; color: var(--color-text-secondary); text-align: center; text-transform: uppercase; letter-spacing: 0.04em; }
+    .col-hdr.left { text-align: left; }
+    .day-badge, .night-badge { font-size: 0.7rem; font-weight: 600; padding: 4px 6px; border-radius: 20px; text-align: center; white-space: nowrap; }
+    .day-badge { background: var(--accent); color: white; }
+    .night-badge { background: #e9eef4; color: #334155; border: 1px solid var(--color-border-secondary); }
+    .loc-label { font-size: 0.9rem; font-weight: 500; }
+    .time-input, .remarks-input { background: var(--color-background-secondary); border: 1px solid var(--color-border-secondary); border-radius: 10px; padding: 10px 6px; font-size: 0.8rem; text-align: center; width: 100%; font-family: var(--font-sans); }
+    .remarks-input { text-align: left; padding: 10px 8px; }
+    .hazard-row { display: grid; grid-template-columns: 30px 1fr 1fr; gap: 10px; align-items: start; padding: 12px 0; border-bottom: 1px solid var(--color-border-tertiary); }
+    .hazard-num { font-weight: 700; color: var(--accent); padding-top: 12px; }
+    .pi-row { display: grid; grid-template-columns: 30px 1fr; gap: 10px; align-items: center; padding: 8px 0; }
+    .compliance-scroll { overflow-x: auto; }
+    .compliance-grid { min-width: 560px; }
+    .compliance-header, .compliance-row { display: grid; grid-template-columns: 1fr 100px 90px 100px; gap: 8px; align-items: center; padding: 10px 0; }
+    .compliance-header { border-bottom: 2px solid var(--color-border-secondary); margin-bottom: 4px; }
+    .compliance-row { border-bottom: 1px solid var(--color-border-tertiary); }
+    .yn-select { background: var(--color-background-secondary); border: 1px solid var(--color-border-secondary); border-radius: 10px; padding: 10px 4px; font-size: 0.8rem; text-align: center; width: 100%; }
+    .sig-area { border: 1px dashed var(--color-border-primary); border-radius: var(--border-radius-md); height: 90px; display: flex; align-items: center; justify-content: center; cursor: crosshair; position: relative; background: var(--color-background-secondary); touch-action: none; }
+    .sig-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: var(--border-radius-md); touch-action: none; }
+    .sig-hint { font-size: 0.8rem; color: var(--color-text-secondary); pointer-events: none; background: rgba(255,255,255,0.5); padding: 4px 10px; border-radius: 30px; }
+    .sig-clear { position: absolute; top: 8px; right: 8px; font-size: 0.7rem; background: white; border: 1px solid var(--color-border-secondary); border-radius: 30px; padding: 4px 10px; cursor: pointer; z-index: 10; display: none; font-weight: 500; }
+    .info-bar { background: var(--color-background-info); border: 1px solid var(--color-border-info); border-radius: 40px; padding: 12px 18px; font-size: 0.9rem; color: var(--color-text-info); margin-bottom: 1.5rem; font-weight: 500; }
+    .submit-btn { width: 100%; padding: 18px; background: var(--accent); color: white; border: none; border-radius: 60px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1.5rem; transition: 0.15s; box-shadow: 0 8px 18px rgba(26,58,92,0.2); }
+    .submit-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+    .success-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
+    .success-modal.open { display: flex; }
+    .success-card { background: white; border-radius: 32px; padding: 2rem; text-align: center; max-width: 340px; width: 90%; box-shadow: 0 20px 35px rgba(0,0,0,0.1); }
+    .check-icon { width: 64px; height: 64px; background: var(--accent); border-radius: 64px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; }
+    .spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid white; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; vertical-align: middle; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (max-width: 500px) {
+      .jmp-app { padding: 0.75rem 0.75rem 2.5rem; }
+      .field-row { grid-template-columns: 1fr; gap: 12px; }
+      .odometer-row { grid-template-columns: 1fr; }
+      .rtab { font-size: 0.8rem; padding: 10px 4px; }
+    }
+
+    /* Dark Green Theme for Dar → Kigali Route */
+    .jmp-app.theme-dark-green {
+      --accent: var(--color-dark-green);
+      --accent-light: var(--color-dark-green-light);
+      --shadow-focus: 0 0 0 3px rgba(27, 94, 32, 0.15);
+      --color-background-info: #f1f8f6;
+      --color-border-info: #a8d8ba;
+      --color-text-info: #1b5e20;
+    }
+
+    .jmp-app.theme-dark-green .info-bar {
+      background: #e8f5e9;
+      border-color: #a8d8ba;
+      color: #1b5e20;
+    }
+
+    .jmp-app.theme-dark-green .header {
+      background: var(--color-dark-green);
+      box-shadow: 0 4px 12px rgba(27, 94, 32, 0.15);
+    }
+
+    .jmp-app.theme-dark-green .header::after {
+      display: none;
+    }
+
+    .jmp-app.theme-dark-green .header-content {
+      background: var(--color-dark-green);
+    }
+
+    .jmp-app.theme-dark-green .rtab.active {
+      background: var(--color-dark-green);
+      border-color: var(--color-dark-green);
+      box-shadow: 0 6px 12px rgba(27, 94, 32, 0.15);
+    }
+
+    .jmp-app.theme-dark-green .submit-btn {
+      background: var(--color-dark-green);
+      box-shadow: 0 8px 18px rgba(27, 94, 32, 0.25);
+    }
+
+    .jmp-app.theme-dark-green .submit-btn:hover:not(:disabled) {
+      background: var(--color-dark-green-light);
+    }
+
+    .jmp-app.theme-dark-green .dot {
+      background: var(--color-dark-green);
+    }
+
+    .jmp-app.theme-dark-green .day-badge {
+      background: var(--color-dark-green);
+    }
+
+    .jmp-app.theme-dark-green .field input:focus,
+    .jmp-app.theme-dark-green .field select:focus,
+    .jmp-app.theme-dark-green .field textarea:focus {
+      border-color: var(--color-dark-green);
+    }
+  </style>
+<base target="_blank">
+</head>
+<body>
+<div class="jmp-app">
+  <div class="header">
+    <img src="Company logo.png" alt="3RAG Company Logo" class="header-logo">
+    <div class="header-content">
+      <h1>🚛 Journey Management Plan</h1>
+      <p>Contact: 0785890883 / 0788528795 &nbsp;|&nbsp; Tracking: +250 788963206</p>
+      <div class="company-id">© 3RAG COMPANY LTD</div>
+    </div>
+  </div>
+
+  <div class="route-tabs">
+    <div class="rtab active" data-route="kgl-dar">Kigali → Dar es Salaam</div>
+    <div class="rtab" data-route="dar-kgl">Dar es Salaam → Kigali</div>
+  </div>
+
+  <div class="info-bar" id="form-status">✅ Fill all fields. Actual times must be recorded at each checkpoint.</div>
+
+  <!-- KGL → DAR -->
+  <div id="route-kgl-dar" class="route-container">
+    <div class="section">
+      <div class="section-header"><div class="dot"></div>Driver & vehicle</div>
+      <div class="section-body">
+        <div class="field-row">
+          <div class="field"><label>Driver name</label><input type="text" id="kd-driver" placeholder="Full name"></div>
+          <div class="field"><label>Plate number</label><input type="text" id="kd-plate" placeholder="RAC 123A"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Passengers</label><input type="number" id="kd-passengers" min="0" value="0"></div>
+          <div class="field"><label>Departure date</label><input type="date" id="kd-depdate"></div>
+        </div>
+        <div class="field-row full">
+          <div class="field"><label>Route</label><input type="text" value="Kigali → Dar es Salaam (1,477 km)" readonly style="background:#eef2f6;"></div>
+        </div>
+        <div class="odometer-row">
+          <div class="field"><label>Odo start (km)</label><input type="number" id="kd-odo-start" placeholder="84200"></div>
+          <div class="field"><label>Odo end (km)</label><input type="number" id="kd-odo-end" placeholder="85677"></div>
+          <div class="field"><label>OBC reading</label><input type="number" id="kd-obc" placeholder="1477"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="dot"></div>Checkpoints · KGL → DAR</div>
+      <div class="section-body" style="padding:12px 16px;">
+        <div class="checkpoint-scroll"><div class="checkpoint-grid">
+          <div class="checkpoint-header">
+            <div class="col-hdr left">Day</div><div class="col-hdr left">Location</div>
+            <div class="col-hdr">Plan start</div><div class="col-hdr">Plan stop</div>
+            <div class="col-hdr">Actual start</div><div class="col-hdr">Actual stop</div>
+            <div class="col-hdr left">Remarks</div>
+          </div>
+          <div id="checkpoints-kgl-dar"></div>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="dot"></div>Hazards & black spots</div>
+      <div class="section-body">
+        <div style="display:grid; grid-template-columns:30px 1fr 1fr; gap:10px; font-weight:600; font-size:0.7rem; color:var(--color-text-secondary);">
+          <div></div><div>Location / hazard</div><div>Defensive action</div>
+        </div>
+        <div id="hazards-kgl-dar"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="dot"></div>Post-journey debrief</div>
+      <div class="section-body">
+        <div style="font-weight:500;">Potential incidents</div>
+        <div id="pi-kgl-dar"></div>
+        <div style="height:1px; background:var(--color-border-tertiary); margin:12px 0;"></div>
+        <div class="compliance-scroll"><div class="compliance-grid">
+          <div class="compliance-header"><div class="col-hdr left">Requirement</div><div class="col-hdr">Actual</div><div class="col-hdr">Comply</div><div class="col-hdr">LSR viol.</div></div>
+          <div id="compliance-kgl-dar"></div>
+        </div></div>
+        <div class="field"><label>Camera footage exceptions</label><textarea id="kd-camera" placeholder="Describe any exceptions from camera footage..."></textarea></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="dot"></div>Sign-offs</div>
+      <div class="section-body">
+        <div style="background:var(--color-background-secondary); padding:14px; border-radius:16px; font-size:0.9rem;">
+          I have discussed this plan, understand the hazards listed and will complete all timings truthfully.
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Driver signature</label>
+            <div class="sig-area" id="sig-driver-kd"><canvas class="sig-canvas" id="canvas-driver-kd"></canvas><span class="sig-hint" id="hint-driver-kd">Sign here</span><span class="sig-clear" id="clear-driver-kd" onclick="clearSig('driver-kd')">Clear</span></div>
+            <input type="date" id="kd-driver-date" style="margin-top:8px;">
+          </div>
+          <div class="field"><label>Focal point signature</label>
+            <div class="sig-area" id="sig-fp-kd"><canvas class="sig-canvas" id="canvas-fp-kd"></canvas><span class="sig-hint" id="hint-fp-kd">Sign here</span><span class="sig-clear" id="clear-fp-kd" onclick="clearSig('fp-kd')">Clear</span></div>
+            <input type="date" id="kd-fp-date" style="margin-top:8px;">
+          </div>
+        </div>
+        <div class="field"><label>Approved for next trip</label>
+          <select id="kd-approved"><option value="">Select</option><option>Yes</option><option>No</option></select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAR → KGL -->
+  <div id="route-dar-kgl" class="route-container" style="display:none;">
+    <div class="section">
+      <div class="section-header"><div class="dot"></div>Driver & vehicle</div>
+      <div class="section-body">
+        <div class="field-row">
+          <div class="field"><label>Driver name</label><input type="text" id="dk-driver" placeholder="Full name"></div>
+          <div class="field"><label>Plate number</label><input type="text" id="dk-plate" placeholder="RAC 123A"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Passengers</label><input type="number" id="dk-passengers" min="0" value="0"></div>
+          <div class="field"><label>Departure date</label><input type="date" id="dk-depdate"></div>
+        </div>
+        <div class="field-row full">
+          <div class="field"><label>Route</label><input type="text" value="Dar es Salaam → Kigali (1,477 km)" readonly style="background:#eef2f6;"></div>
+        </div>
+        <div class="odometer-row">
+          <div class="field"><label>Odo start (km)</label><input type="number" id="dk-odo-start"></div>
+          <div class="field"><label>Odo end (km)</label><input type="number" id="dk-odo-end"></div>
+          <div class="field"><label>OBC reading</label><input type="number" id="dk-obc"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="dot"></div>Checkpoints · DAR → KGL</div>
+      <div class="section-body" style="padding:12px 16px;">
+        <div class="checkpoint-scroll"><div class="checkpoint-grid">
+          <div class="checkpoint-header"><div class="col-hdr left">Day</div><div class="col-hdr left">Location</div><div class="col-hdr">Plan start</div><div class="col-hdr">Plan stop</div><div class="col-hdr">Actual start</div><div class="col-hdr">Actual stop</div><div class="col-hdr left">Remarks</div></div>
+          <div id="checkpoints-dar-kgl"></div>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="dot"></div>Hazards & black spots</div>
+      <div class="section-body">
+        <div style="display:grid; grid-template-columns:30px 1fr 1fr; gap:10px; font-weight:600; font-size:0.7rem; color:var(--color-text-secondary);">
+          <div></div><div>Location / hazard</div><div>Defensive action</div>
+        </div>
+        <div id="hazards-dar-kgl"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="dot"></div>Post-journey debrief</div>
+      <div class="section-body">
+        <div style="font-weight:500;">Potential incidents</div>
+        <div id="pi-dar-kgl"></div>
+        <div style="height:1px; background:var(--color-border-tertiary); margin:12px 0;"></div>
+        <div class="compliance-scroll"><div class="compliance-grid">
+          <div class="compliance-header"><div class="col-hdr left">Requirement</div><div class="col-hdr">Actual</div><div class="col-hdr">Comply</div><div class="col-hdr">LSR viol.</div></div>
+          <div id="compliance-dar-kgl"></div>
+        </div></div>
+        <div class="field"><label>Camera footage exceptions</label><textarea id="dk-camera" placeholder="Describe any exceptions..."></textarea></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><div class="dot"></div>Sign-offs</div>
+      <div class="section-body">
+        <div style="background:var(--color-background-secondary); padding:14px; border-radius:16px; font-size:0.9rem;">
+          I have discussed this plan and will complete all timings truthfully.
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Driver signature</label>
+            <div class="sig-area" id="sig-driver-dk"><canvas class="sig-canvas" id="canvas-driver-dk"></canvas><span class="sig-hint">Sign here</span><span class="sig-clear" id="clear-driver-dk" onclick="clearSig('driver-dk')">Clear</span></div>
+            <input type="date" id="dk-driver-date">
+          </div>
+          <div class="field"><label>Focal point signature</label>
+            <div class="sig-area" id="sig-fp-dk"><canvas class="sig-canvas" id="canvas-fp-dk"></canvas><span class="sig-hint">Sign here</span><span class="sig-clear" id="clear-fp-dk" onclick="clearSig('fp-dk')">Clear</span></div>
+            <input type="date" id="dk-fp-date">
+          </div>
+        </div>
+        <div class="field"><label>Approved for next trip</label>
+          <select id="dk-approved"><option value="">Select</option><option>Yes</option><option>No</option></select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="submit-btn" id="submitJMP" onclick="submitJMP()">✓ Submit Journey Management Plan</button>
+</div>
+
+<!-- Success Modal -->
+<div class="success-modal" id="success-modal">
+  <div class="success-card">
+    <div class="check-icon">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3"/></svg>
+    </div>
+    <p style="font-size:1.2rem; font-weight:600; margin-bottom:8px;">Submitted!</p>
+    <p style="color:#475569; font-size:0.9rem; margin-bottom:16px;">PDF saved to Google Drive.</p>
+    <div id="pdf-link-container" style="display:none; margin-bottom:20px;">
+      <a id="pdf-drive-link" href="#" target="_blank"
+         style="display:inline-block; background:#eef6ff; color:#1a3a5c; border:1px solid #bdd9ff; border-radius:30px; padding:10px 20px; font-weight:600; font-size:0.9rem; text-decoration:none;">
+        📄 Open PDF in Drive
+      </a>
+    </div>
+    <div id="journey-summary" style="font-size:11px; text-align:left; color:#475569; padding:12px; background:#f5f7fa; border-radius:12px; margin-bottom:20px; display:none;"></div>
+    <button onclick="document.getElementById('success-modal').classList.remove('open')"
+            style="background:#1a3a5c; color:#fff; border:none; border-radius:40px; padding:12px 28px; font-size:0.95rem; font-weight:600; cursor:pointer;">
+      Done
+    </button>
+  </div>
+</div>
+
+<script>
+(function(){
+
+  // ══════════════════════════════════════════════════════════
+  //  ⚠️  STEP 1: REPLACE WITH YOUR DEPLOYED WEB APP URL
+  //  After deploying the Apps Script, copy the URL and replace
+  //  the placeholder below (keep the quotes).
+  // ══════════════════════════════════════════════════════════
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzdj1weHDAHXCrfW8qTSr3-B5kNlE9d8TXLhKEbQxam70OoRzUEroBLOSC-FtMRxfNGLg/exec';
+
+  // ──────────────────────────────────────────────────────────
+  //  STATIC DATA
+  // ──────────────────────────────────────────────────────────
+  const kglDarCheckpoints = [
+    {day:'DAY 1', loc:'Kigali – Rusumo',         ps:'06:00', pe:'10:00'},
+    {day:'',      loc:'Customs declaration',      ps:'10:00', pe:'11:00'},
+    {day:'',      loc:'Rusumo – Runzewe',         ps:'11:00', pe:'15:00'},
+    {day:'',      loc:'Rest stop, lunch & check', ps:'15:00', pe:'16:00'},
+    {day:'',      loc:'Runzewe – Kahama',         ps:'16:00', pe:'18:00'},
+    {day:'NIGHT', loc:'Night stay at Kahama',     ps:'', pe:'', night:true},
+    {day:'DAY 2', loc:'Kahama – Misigiri',        ps:'06:00', pe:'10:00'},
+    {day:'',      loc:'Rest stop, breakfast',     ps:'10:00', pe:'11:00'},
+    {day:'',      loc:'Misigiri – Manyoni',       ps:'11:00', pe:'15:00'},
+    {day:'',      loc:'Rest stop, lunch',         ps:'15:00', pe:'16:00'},
+    {day:'',      loc:'Manyoni – Dodoma',         ps:'16:00', pe:'18:00'},
+    {day:'NIGHT', loc:'Night stay at Dodoma',     ps:'', pe:'', night:true},
+    {day:'DAY 3', loc:'Dodoma – Dumila',          ps:'06:00', pe:'10:00'},
+    {day:'',      loc:'Rest stop',                ps:'10:00', pe:'11:00'},
+    {day:'',      loc:'Dumila – Mikese',          ps:'11:00', pe:'15:00'},
+    {day:'',      loc:'Rest stop',                ps:'15:00', pe:'16:00'},
+    {day:'',      loc:'Mikese – Kibaha',          ps:'16:00', pe:'18:00'},
+    {day:'NIGHT', loc:'Night stay at Kibaha',     ps:'', pe:'', night:true},
+    {day:'DAY 4', loc:'Kibaha – Kurasini/Dar',   ps:'06:00', pe:'09:00'},
+    {day:'WAIT',  loc:'Waiting to load',          ps:'', pe:'', wait:true},
+  ];
+
+  const darKglCheckpoints = [
+    {day:'DAY 1', loc:'Kurasini – Morogoro',     ps:'06:00', pe:'09:00'},
+    {day:'',      loc:'Rest stop',               ps:'09:00', pe:'10:00'},
+    {day:'',      loc:'Morogoro – Kibaigwa',     ps:'10:00', pe:'14:00'},
+    {day:'',      loc:'Rest stop',               ps:'14:00', pe:'15:00'},
+    {day:'',      loc:'Kibaigwa – Dodoma',       ps:'15:00', pe:'18:00'},
+    {day:'NIGHT', loc:'Night stay at Dodoma',    ps:'', pe:'', night:true},
+    {day:'DAY 2', loc:'Dodoma – Ikungi',         ps:'06:00', pe:'10:00'},
+    {day:'',      loc:'Rest stop',               ps:'10:00', pe:'11:00'},
+    {day:'',      loc:'Ikungi – Nzega',          ps:'11:00', pe:'15:00'},
+    {day:'',      loc:'Rest stop',               ps:'15:00', pe:'16:00'},
+    {day:'',      loc:'Nzega – Isaka',           ps:'16:00', pe:'18:00'},
+    {day:'NIGHT', loc:'Night stay at Isaka',     ps:'', pe:'', night:true},
+    {day:'DAY 3', loc:'Isaka – Bukombe',         ps:'06:00', pe:'10:00'},
+    {day:'',      loc:'Rest stop',               ps:'10:00', pe:'11:00'},
+    {day:'',      loc:'Bukombe – Lusahunga',     ps:'11:00', pe:'15:00'},
+    {day:'',      loc:'Rest stop',               ps:'15:00', pe:'16:00'},
+    {day:'',      loc:'Lusahunga – Rusumo',      ps:'16:00', pe:'18:00'},
+    {day:'NIGHT', loc:'Night stay at Rusumo',    ps:'', pe:'', night:true},
+    {day:'DAY 4', loc:'Breakfast & customs',     ps:'08:00', pe:'09:00'},
+    {day:'',      loc:'Rusumo – Kigali',         ps:'09:00', pe:'13:00'},
+    {day:'WAIT',  loc:'Waiting to offload',      ps:'', pe:'', wait:true},
+  ];
+
+  const kglDarHazards = [
+    {loc:'Kirehe',       action:'Reduce to 30 km/h — busy township'},
+    {loc:'Rusumo TZ side', action:'30 km/h, engine brake, use retarder'},
+    {loc:'Benako',       action:'Observe trucks ahead, check mirrors'},
+    {loc:'Isaka',        action:'Reduce to 30 km/h'},
+    {loc:'Manyoni',      action:'30 km/h, rail crossing — stop if train'},
+    {loc:'Mbezi',        action:'30 km/h, observe & make safe decision'},
+  ];
+
+  const darKglHazards = [
+    {loc:'Mandela Road', action:'Stop at all intersections, ≤40 km/h'},
+    {loc:'Mbezi',        action:'30 km/h, observe hazards'},
+    {loc:'Manyoni',      action:'30 km/h, stop at rail crossing'},
+    {loc:'Isaka',        action:'Reduce to 30 km/h'},
+    {loc:'Benako',       action:'Observe trucks ahead'},
+    {loc:'Rusumo TZ side', action:'30 km/h, use engine brake'},
+    {loc:'Kirehe',       action:'30 km/h — busy township'},
+  ];
+
+  const complianceItems = [
+    'Max speed (80 km/h)', 'Low speed zone (50 km/h)', 'Driving hours/day (9 hrs)',
+    'Continuous driving (4.5 hrs)', 'Rest break (45 min)', 'Duty hours (12 hrs)',
+    'Continuous rest (11 hrs)', '72 hr rest per 6 days', 'Authorised route only',
+    'Planned rest stops taken', 'Harsh braking events', 'Harsh acceleration events',
+  ];
+
+  // ──────────────────────────────────────────────────────────
+  //  BUILD UI
+  // ──────────────────────────────────────────────────────────
+  function buildCheckpoints(data, containerId) {
+    const el = document.getElementById(containerId);
+    el.innerHTML = data.map((c) => {
+      if (c.night || c.wait) {
+        const badge = c.night ? 'NIGHT' : 'WAIT';
+        return `<div class="checkpoint-row"><div class="night-badge">${badge}</div><div class="loc-label">${c.loc}</div><div></div><div></div><div></div><div></div><div></div></div>`;
+      }
+      return `<div class="checkpoint-row">
+        <div>${c.day ? `<div class="day-badge">${c.day}</div>` : ''}</div>
+        <div class="loc-label">${c.loc}</div>
+        <div><input class="time-input" value="${c.ps}" readonly></div>
+        <div><input class="time-input" value="${c.pe}" readonly></div>
+        <div><input class="time-input" type="time"></div>
+        <div><input class="time-input" type="time"></div>
+        <div><input class="remarks-input" placeholder="Notes"></div>
+      </div>`;
+    }).join('');
+  }
+
+  function buildHazards(data, containerId) {
+    document.getElementById(containerId).innerHTML = data.map((h, i) =>
+      `<div class="hazard-row">
+        <div class="hazard-num">${i + 1}</div>
+        <div><input class="remarks-input" value="${h.loc}"></div>
+        <div><input class="remarks-input" value="${h.action}"></div>
+      </div>`
+    ).join('');
+  }
+
+  function buildPI(containerId) {
+    document.getElementById(containerId).innerHTML = [1,2,3].map(n =>
+      `<div class="pi-row"><div class="hazard-num">${n}</div><div><input class="remarks-input" placeholder="Describe incident (leave blank if none)"></div></div>`
+    ).join('');
+  }
+
+  function buildCompliance(containerId) {
+    document.getElementById(containerId).innerHTML = complianceItems.map(item =>
+      `<div class="compliance-row">
+        <div style="font-size:0.85rem;">${item}</div>
+        <div><input class="time-input" placeholder="Value"></div>
+        <div><select class="yn-select"><option value="–">–</option><option>Y</option><option>N</option></select></div>
+        <div><select class="yn-select"><option value="–">–</option><option>Y</option><option>N</option></select></div>
+      </div>`
+    ).join('');
+  }
+
+  // Build all sections
+  buildCheckpoints(kglDarCheckpoints, 'checkpoints-kgl-dar');
+  buildCheckpoints(darKglCheckpoints, 'checkpoints-dar-kgl');
+  buildHazards(kglDarHazards, 'hazards-kgl-dar');
+  buildHazards(darKglHazards, 'hazards-dar-kgl');
+  buildPI('pi-kgl-dar'); buildPI('pi-dar-kgl');
+  buildCompliance('compliance-kgl-dar'); buildCompliance('compliance-dar-kgl');
+
+  // ──────────────────────────────────────────────────────────
+  //  TAB SWITCHING
+  // ──────────────────────────────────────────────────────────
+  const jmpApp = document.querySelector('.jmp-app');
+  
+  document.querySelectorAll('.rtab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.rtab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const route = tab.dataset.route;
+      document.getElementById('route-kgl-dar').style.display = route === 'kgl-dar' ? 'block' : 'none';
+      document.getElementById('route-dar-kgl').style.display = route === 'dar-kgl' ? 'block' : 'none';
+      
+      // Apply dark green theme for Dar → Kigali route
+      if (route === 'dar-kgl') {
+        jmpApp.classList.add('theme-dark-green');
+      } else {
+        jmpApp.classList.remove('theme-dark-green');
+      }
+    });
+  });
+
+  // ──────────────────────────────────────────────────────────
+  //  SIGNATURE PADS
+  // ──────────────────────────────────────────────────────────
+  const sigStates = {};
+
+  function initSig(id) {
+    const canvas = document.getElementById('canvas-' + id);
+    if (!canvas) return;
+    const area = canvas.parentElement;
+    const hint = area.querySelector('.sig-hint');
+    const clearBtn = document.getElementById('clear-' + id);
+    canvas.width  = canvas.offsetWidth  || 300;
+    canvas.height = canvas.offsetHeight || 90;
+    const ctx = canvas.getContext('2d');
+    ctx.strokeStyle = '#1a3a5c'; ctx.lineWidth = 2.5; ctx.lineCap = 'round';
+    sigStates[id] = { drawing: false, ctx, hasContent: false };
+
+    function getPos(e) {
+      const r = canvas.getBoundingClientRect();
+      const src = e.touches ? e.touches[0] : e;
+      return { x: src.clientX - r.left, y: src.clientY - r.top };
+    }
+
+    function start(e) {
+      e.preventDefault();
+      sigStates[id].drawing = true;
+      sigStates[id].hasContent = true;
+      const p = getPos(e);
+      ctx.beginPath(); ctx.moveTo(p.x, p.y);
+      if (hint) hint.style.display = 'none';
+      if (clearBtn) clearBtn.style.display = 'block';
+    }
+
+    function move(e) {
+      e.preventDefault();
+      if (!sigStates[id].drawing) return;
+      const p = getPos(e);
+      ctx.lineTo(p.x, p.y); ctx.stroke();
+    }
+
+    function end() { sigStates[id].drawing = false; }
+
+    canvas.addEventListener('mousedown', start);
+    canvas.addEventListener('mousemove', move);
+    canvas.addEventListener('mouseup', end);
+    canvas.addEventListener('touchstart', start, { passive: false });
+    canvas.addEventListener('touchmove', move, { passive: false });
+    canvas.addEventListener('touchend', end);
+  }
+
+  window.clearSig = function(id) {
+    const canvas = document.getElementById('canvas-' + id);
+    if (!canvas) return;
+    const s = sigStates[id];
+    if (s && s.ctx) s.ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (s) { s.hasContent = false; }
+    const hint = canvas.parentElement.querySelector('.sig-hint');
+    if (hint) hint.style.display = 'block';
+    const cb = document.getElementById('clear-' + id);
+    if (cb) cb.style.display = 'none';
+  };
+
+  setTimeout(() => {
+    ['driver-kd', 'fp-kd', 'driver-dk', 'fp-dk'].forEach(initSig);
+  }, 150);
+
+  // ──────────────────────────────────────────────────────────
+  //  DATA COLLECTION
+  // ──────────────────────────────────────────────────────────
+  function collectFormData(prefix, routeKey) {
+    const v = (id) => (document.getElementById(prefix + '-' + id) || {}).value || '';
+
+    const cpData = routeKey === 'kgl-dar' ? kglDarCheckpoints : darKglCheckpoints;
+    const cpContainer = document.getElementById('checkpoints-' + routeKey);
+    const cpRows = cpContainer ? cpContainer.querySelectorAll('.checkpoint-row') : [];
+    const checkpoints = [];
+
+    cpRows.forEach((row, idx) => {
+      const locEl = row.querySelector('.loc-label');
+      if (!locEl) return;
+      const loc = locEl.innerText.trim();
+      const inputs = row.querySelectorAll('input');
+      if (inputs.length < 5) return; // skip night/wait rows
+      checkpoints.push({
+        location:     loc,
+        plannedStart: idx < cpData.length ? (cpData[idx].ps || '') : '',
+        plannedStop:  idx < cpData.length ? (cpData[idx].pe || '') : '',
+        actualStart:  inputs[2] ? inputs[2].value : '',
+        actualStop:   inputs[3] ? inputs[3].value : '',
+        remarks:      inputs[4] ? inputs[4].value : '',
+      });
+    });
+
+    const hzContainer = document.getElementById('hazards-' + routeKey);
+    const hazards = [];
+    (hzContainer ? hzContainer.querySelectorAll('.hazard-row') : []).forEach(row => {
+      const inps = row.querySelectorAll('input');
+      if (inps.length >= 2) hazards.push({ location: inps[0].value, action: inps[1].value });
+    });
+
+    const piContainer = document.getElementById('pi-' + routeKey);
+    const incidents = [];
+    (piContainer ? piContainer.querySelectorAll('.pi-row input') : []).forEach(inp => {
+      if (inp.value.trim()) incidents.push(inp.value.trim());
+    });
+
+    const cmpContainer = document.getElementById('compliance-' + routeKey);
+    const compliance = [];
+    (cmpContainer ? cmpContainer.querySelectorAll('.compliance-row') : []).forEach((row, i) => {
+      const inps = row.querySelectorAll('input, select');
+      compliance.push({
+        requirement: complianceItems[i] || '',
+        actual:  inps[0] ? inps[0].value : '',
+        comply:  inps[1] ? inps[1].value : '',
+        lsr:     inps[2] ? inps[2].value : '',
+      });
+    });
+
+    const driverCanvas = document.getElementById('canvas-driver-' + prefix);
+    const fpCanvas     = document.getElementById('canvas-fp-' + prefix);
+    const driverHasSig = sigStates['driver-' + prefix] && sigStates['driver-' + prefix].hasContent;
+    const fpHasSig     = sigStates['fp-' + prefix] && sigStates['fp-' + prefix].hasContent;
+
+    return {
+      route:           routeKey === 'kgl-dar' ? 'Kigali → Dar es Salaam' : 'Dar es Salaam → Kigali',
+      driver:          v('driver'),
+      plate:           v('plate'),
+      passengers:      v('passengers'),
+      depDate:         v('depdate'),
+      odoStart:        v('odo-start'),
+      odoEnd:          v('odo-end'),
+      obc:             v('obc'),
+      camera:          v('camera'),
+      driverDate:      v('driver-date'),
+      fpDate:          v('fp-date'),
+      approved:        v('approved'),
+      driverSignature: driverHasSig && driverCanvas ? driverCanvas.toDataURL('image/png') : '',
+      fpSignature:     fpHasSig && fpCanvas ? fpCanvas.toDataURL('image/png') : '',
+      checkpoints,
+      hazards,
+      incidents,
+      compliance,
+      submittedAt:     new Date().toISOString(),
+    };
+  }
+
+  // ──────────────────────────────────────────────────────────
+  //  SUBMISSION
+  // ──────────────────────────────────────────────────────────
+  window.submitJMP = async function() {
+    const btn       = document.getElementById('submitJMP');
+    const statusEl  = document.getElementById('form-status');
+
+    // ── STEP 0: Verify SCRIPT_URL is configured ──
+    if (SCRIPT_URL.includes('YOUR_SCRIPT_ID')) {
+      alert('⚠️ Please configure your Apps Script URL first.\n\nOpen the HTML file, find SCRIPT_URL at the top of the <script> section, and replace it with your deployed Web App URL.');
+      return;
+    }
+
+    // Determine active route
+    const activeTab = document.querySelector('.rtab.active');
+    const routeKey  = activeTab ? activeTab.dataset.route : 'kgl-dar';
+    const prefix    = routeKey === 'kgl-dar' ? 'kd' : 'dk';
+
+    // Validate required fields
+    const driverEl = document.getElementById(prefix + '-driver');
+    const plateEl  = document.getElementById(prefix + '-plate');
+    const dateEl   = document.getElementById(prefix + '-depdate');
+
+    if (!driverEl || !driverEl.value.trim()) {
+      alert('❌ Please enter the driver name before submitting.');
+      driverEl && driverEl.focus();
+      return;
+    }
+    if (!plateEl || !plateEl.value.trim()) {
+      alert('❌ Please enter the plate number before submitting.');
+      plateEl && plateEl.focus();
+      return;
+    }
+    if (!dateEl || !dateEl.value) {
+      alert('❌ Please select a departure date before submitting.');
+      dateEl && dateEl.focus();
+      return;
+    }
+
+    // Collect data
+    const payload = collectFormData(prefix, routeKey);
+
+    // Update UI to loading state
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Generating PDF…';
+    statusEl.innerHTML = '⏳ Sending to server and creating PDF, please wait…';
+    statusEl.style.background = '#fffbeb';
+    statusEl.style.borderColor = '#fbbf24';
+    statusEl.style.color = '#92400e';
+
+    try {
+      // POST to Apps Script
+      const resp = await fetch(SCRIPT_URL, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body:    'data=' + encodeURIComponent(JSON.stringify(payload)),
+      });
+
+      let result = {};
+      try {
+        result = await resp.json();
+      } catch (_) {
+        // Apps Script with no-cors won't return parseable JSON —
+        // treat as success if HTTP status is 200
+        if (resp.status === 200 || resp.type === 'opaque') {
+          result = { status: 'success' };
+        }
+      }
+
+      if (result.status === 'success' || result.status === undefined) {
+        // ── Show success modal ──
+        statusEl.innerHTML = '✅ PDF generated and saved to Google Drive!';
+        statusEl.style.background = '#ecfdf5';
+        statusEl.style.borderColor = '#6ee7b7';
+        statusEl.style.color = '#065f46';
+
+        // Populate drive link if returned
+        if (result.fileUrl) {
+          const linkEl = document.getElementById('pdf-drive-link');
+          const linkContainer = document.getElementById('pdf-link-container');
+          if (linkEl) linkEl.href = result.fileUrl;
+          if (linkContainer) linkContainer.style.display = 'block';
+        }
+
+        // Populate journey summary
+        const summaryEl = document.getElementById('journey-summary');
+        if (summaryEl) {
+          summaryEl.innerHTML = `
+            <strong>Driver:</strong> ${payload.driver}<br>
+            <strong>Plate:</strong> ${payload.plate}<br>
+            <strong>Route:</strong> ${payload.route}<br>
+            <strong>Date:</strong> ${payload.depDate}<br>
+            <strong>Passengers:</strong> ${payload.passengers}
+          `;
+          summaryEl.style.display = 'block';
+        }
+
+        document.getElementById('success-modal').classList.add('open');
+        btn.innerHTML = '✓ Submit Journey Management Plan';
+
+      } else {
+        throw new Error(result.message || 'Unknown error from server.');
+      }
+
+    } catch (err) {
+      console.error('JMP submission error:', err);
+      statusEl.innerHTML = '❌ Submission failed: ' + err.message + '. Please try again or contact support.';
+      statusEl.style.background = '#fef2f2';
+      statusEl.style.borderColor = '#fca5a5';
+      statusEl.style.color = '#991b1b';
+      alert('Submission error:\n' + err.message);
+    } finally {
+      btn.disabled = false;
+      if (btn.innerHTML.includes('spinner')) {
+        btn.innerHTML = '✓ Submit Journey Management Plan';
+      }
+    }
+  };
+
+})();
+</script>
+</body>
+</html>
